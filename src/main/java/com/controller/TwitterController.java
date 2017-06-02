@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.ui.Model;
 
 import twitter4j.*;
@@ -50,6 +51,13 @@ public class TwitterController {
   @RequestMapping("/")
   String index(@ModelAttribute TwitterForm form, Model model) {
     model.addAttribute("form", form);
+    model.addAttribute("auth", auth);
+    return "twitter/favbom";
+  }
+
+  @RequestMapping("/logout")
+  String logout(Model model, SessionStatus sessionStatus) {
+    sessionStatus.setComplete();
     model.addAttribute("auth", auth);
     return "twitter/favbom";
   }
