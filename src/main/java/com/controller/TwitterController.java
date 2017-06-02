@@ -123,6 +123,7 @@ public class TwitterController {
           }
         }
       }
+      form.setTweets(tweets);
     }  catch (Exception e) {
       form.setMessage(e.getMessage());
     }

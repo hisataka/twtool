@@ -38,7 +38,7 @@ public class TwitterForm implements Serializable {
     }
     return tweets;
   }
-  public void setTweet(List<Tweet> tweets) {
+  public void setTweets(List<Tweet> tweets) {
     this.tweets = tweets;
   }
   public String getAuthUri() {
