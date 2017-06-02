@@ -1,12 +1,11 @@
 package com.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.ui.Model;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -21,20 +20,25 @@ import oauth.signpost.http.HttpParameters;
 
 import javax.servlet.http.HttpSession;
 
+import com.model.Auth;
+import com.model.TwitterForm;
+
 @Controller
-@SpringBootApplication
 public class TwitterController {
 
 	@Autowired
 	HttpSession session;
+
+  @Autowired
+  Auth auth;
 
   public static final String CONCUMER_KEY = "2sEcph9BOK5Hk412wQ8qJaSI1";
   public static final String CONSUMER_SECRET = "IKHsWgt959b693MTCYc5BYMQOXsDqR4I3m9VXqW0zk7sKvyXdA";
   public static final String REQUEST_TOKEN_URI = "https://api.twitter.com/oauth/request_token";
   public static final String ACCESS_TOKEN_URI = "https://api.twitter.com/oauth/access_token";
   public static final String AUTHORIZE_URI = "https://api.twitter.com/oauth/authorize";
-  public static final String CALLBACK_URI = "https://glacial-river-49306.herokuapp.com/auth/";
-//  public static final String CALLBACK_URI = "http://localhost:5000/auth/";
+//  public static final String CALLBACK_URI = "https://glacial-river-49306.herokuapp.com/auth/";
+  public static final String CALLBACK_URI = "http://localhost:5000/auth/";
   
   public static final String SK_CONSUMER = "consumer";
   public static final String SK_PROVIDER = "provider";
@@ -56,38 +60,51 @@ public class TwitterController {
   
   public static final int TW_PAGING_COUNT = 20;
 
-  public static void main(String[] args) throws Exception {
-    SpringApplication.run(TwitterController.class, args);
+  @ModelAttribute
+  TwitterForm setUpForm() {
+    TwitterForm form = new TwitterForm();
+    form.setMessage("off");
+    return form;
   }
 
   @RequestMapping("/")
-  String index(ModelMap modelMap) {
-      // セッションからアクセストークンなどを取得
-    String user_id = (String) session.getAttribute(SK_USER_ID);
-    String screen_name = (String) session.getAttribute(SK_SCREEN_NAME);
 
-    // OAuthオブジェクトの生成
-    OAuthConsumer consumer = new DefaultOAuthConsumer(CONCUMER_KEY, CONSUMER_SECRET);
-    OAuthProvider provider = new DefaultOAuthProvider(REQUEST_TOKEN_URI, ACCESS_TOKEN_URI, AUTHORIZE_URI);
+  String index(@ModelAttribute TwitterForm form, Model model) {
+    auth.setConsumer(new DefaultOAuthConsumer(CONCUMER_KEY, CONSUMER_SECRET));
+    auth.setProvider(new DefaultOAuthProvider(REQUEST_TOKEN_URI, ACCESS_TOKEN_URI, AUTHORIZE_URI));
     try {
-      // OAuth URIの取得
-      String authUri = provider.retrieveRequestToken(consumer, CALLBACK_URI);
-
-      // セッションへOAuthオブジェクトをセット
-      session.setAttribute(SK_CONSUMER, consumer);
-      session.setAttribute(SK_PROVIDER, provider);
-
-      // リクエストをセット
-      modelMap.addAttribute(RK_AUTH_URI, authUri);
-      modelMap.addAttribute(RK_USER_ID, user_id);
-      modelMap.addAttribute(RK_SCREEN_NAME, screen_name);
+      form.setAuthUri(auth.getProvider().retrieveRequestToken(auth.getConsumer(), CALLBACK_URI));
     } catch (Exception e) {
-      modelMap.addAttribute(RK_IS_ERROR, true);
-      modelMap.addAttribute(RK_MESSAGE, e.getMessage());
+      form.setMessage(e.getMessage());
     }
+    model.addAttribute("form", form);
     return "twitter/favbom";
   }
 
+  @RequestMapping("/auth")
+  String auth(
+    @RequestParam(RK_OAUTH_TOKEN) String oauth_token
+    , @RequestParam(RK_OAUTH_VERIFIER) String oauth_verifier
+    , @ModelAttribute TwitterForm form, Model model) {
+
+    OAuthConsumer consumer = auth.getConsumer();
+    OAuthProvider provider = auth.getProvider();
+
+    try {
+      provider.retrieveAccessToken(consumer, oauth_verifier);
+      HttpParameters hp = provider.getResponseParameters();
+      auth.setUserId(hp.get("user_id").first());
+      auth.setUserName(hp.get("screen_name").first());
+      auth.setAccessToken(consumer.getToken());
+      auth.setTokenSecret(consumer.getTokenSecret());
+    } catch (Exception e) {
+      form.setMessage(e.getMessage());
+    }
+    model.addAttribute("form", form);
+    model.addAttribute("auth", auth);
+    return "twitter/favbom";
+  }
+/*
   @RequestMapping("/auth")
   String auth(@RequestParam(RK_OAUTH_TOKEN) String oauth_token, @RequestParam(RK_OAUTH_VERIFIER) String oauth_verifier, ModelMap modelMap) {
     try {
@@ -123,7 +140,7 @@ public class TwitterController {
 
     return "twitter/favbom";
   }
-
+/*
   @RequestMapping("/fav")
   String fav(@RequestParam(RK_F_NAME) String fname, @RequestParam(RK_FAV_COUNT) String favCount, ModelMap modelMap) {
     try {
@@ -309,5 +326,5 @@ public class TwitterController {
       }
     return "twitter/watch";
   }
-  
+  */
 }
