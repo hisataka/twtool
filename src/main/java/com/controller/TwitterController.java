@@ -95,7 +95,7 @@ public class TwitterController {
           if(favCounter >= form.getFavoriteCount()) {
             break;
           }
-          if(!status.isFavorited() && status.getText().indexOf("@") == -1) {
+          if(!status.isFavorited() && status.getInReplyToStatusId() == -1) {
             Tweet tweet = new Tweet();
             tweet.setId(status.getId());
             tweet.setFavorited(status.isFavorited());
