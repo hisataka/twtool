@@ -37,7 +37,7 @@ public class TwitterController {
   public static final String REQUEST_TOKEN_URI = "https://api.twitter.com/oauth/request_token";
   public static final String ACCESS_TOKEN_URI = "https://api.twitter.com/oauth/access_token";
   public static final String AUTHORIZE_URI = "https://api.twitter.com/oauth/authorize";
-  public static final String CALLBACK_URI = "https://glacial-river-49306.herokuapp.com/auth/";
+  public static final String CALLBACK_URI = "https://mytwtool.herokuapp.com/auth/";
 //  public static final String CALLBACK_URI = "http://localhost:5000/auth/";
   
   public static final String SK_CONSUMER = "consumer";
