@@ -56,8 +56,9 @@ public class TwitterController {
   }
 
   @RequestMapping("/logout")
-  String logout(Model model, SessionStatus sessionStatus) {
+  String logout(@ModelAttribute TwitterForm form, Model model, SessionStatus sessionStatus) {
     sessionStatus.setComplete();
+    model.addAttribute("form", form);
     model.addAttribute("auth", auth);
     return "twitter/favbom";
   }
