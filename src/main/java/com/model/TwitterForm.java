@@ -8,12 +8,19 @@ import java.util.List;
 public class TwitterForm implements Serializable {
   private static final long serialVersionUID = 1L;
 
+  private long favoriteId;
   private String message;
   private String toUserName;
   private long favoriteCount;
   private List<Tweet> tweets;
   private String authUri;
 
+  public long getFavoriteId() {
+    return favoriteId;
+  }
+  public void setFavoritedId(long favoriteId) {
+    this.favoriteId = favoriteId;
+  }
   public String getMessage() {
     return message;
   }
