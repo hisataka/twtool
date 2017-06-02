@@ -14,15 +14,14 @@
                 <a class="navbar-brand" th:href="${auth.authUri}">ログイン</a>
             </div>
             <div th:if="${auth.imageUri}">
-                <img th:src="${auth.imageUri}" />
+                <img th:src="${auth.imageUri}" /><a class="navbar-brand" href="/logout">ログアウト</a>
             </div>
-        </div>
+        </div><!--
         <div id="navbar" class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
             <li class="active"><a href="#">イイネ爆</a></li>
-                <li th:if="${auth.imageUri}"><a href="/logout">ログアウト</a></li>
         </ul>
-        </div>
+        </div>-->
     </div>
 </nav>
 <div class="container theme-showcase">

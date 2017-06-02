@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.ui.Model;
 
 import twitter4j.*;
@@ -20,6 +21,7 @@ import com.model.TwitterConfig;
 import com.logic.TwitterLogic;
 
 @Controller
+@SessionAttributes("scopedTarget.auth")
 public class TwitterController {
   @Autowired
   Auth auth;
@@ -60,7 +62,7 @@ public class TwitterController {
     sessionStatus.setComplete();
     model.addAttribute("form", form);
     model.addAttribute("auth", auth);
-    return "twitter/favbom";
+    return "redirect:/";
   }
 
   @RequestMapping("/auth")
