@@ -78,6 +78,7 @@ public class TwitterController {
       form.setMessage(e.getMessage());
     }
     model.addAttribute("form", form);
+    model.addAttribute("auth", auth);
     return "twitter/favbom";
   }
 
