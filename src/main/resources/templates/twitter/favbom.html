@@ -10,10 +10,10 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <div th:if="${auth.authUri}">
+            <div th:unless="${auth.imageUri}">
                 <a class="navbar-brand" th:href="${auth.authUri}">Twitterログイン</a>
             </div>
-            <div th:unless="${auth.authUri}">
+            <div th:if="${auth.imageUri}">
                 <img th:src="${auth.imageUri}" />
             </div>
         </div>

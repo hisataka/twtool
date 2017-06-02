@@ -34,7 +34,6 @@ public class TwitterController {
     TwitterForm form = new TwitterForm();
     form.setMessage("off");
     form.setFavoriteCount(Integer.parseInt(twitterConfig.getDefaultFavoriteCount()));
-    auth.setAuthUri("off");
     
     if(auth.getConsumer() == null || auth.getProvider() == null) {
       auth.setConsumer(new DefaultOAuthConsumer(twitterConfig.getConsumerKey(), twitterConfig.getConsumerSecret()));
