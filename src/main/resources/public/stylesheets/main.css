@@ -1,3 +1,16 @@
+/* スマホ横画面用 */
+@media screen and (max-width: 480px) {
+  .container{padding:0}
+  div[class^="col-"] {padding:0}
+  .row {margin:0;}
+}
+/* スマホ縦画面用 */
+@media screen and (max-width: 320px) {
+  .container{padding:0}
+  div[class^="col-"] {padding:0}
+  .row {margin:0;}
+}
+
 body {
   padding-top: 70px;
   padding-bottom: 30px;
