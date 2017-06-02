@@ -1,8 +1,6 @@
 package com.model;
 
-import java.util.List;
-
-public class Tweets {
+public class Tweet {
   private long id;
   private boolean favorited;
   private String text;

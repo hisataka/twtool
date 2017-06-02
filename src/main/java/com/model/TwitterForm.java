@@ -11,7 +11,7 @@ public class TwitterForm implements Serializable {
   private String message;
   private String toUserName;
   private long favoriteCount;
-  private List<Tweets> tweets;
+  private List<Tweet> tweets;
   private String authUri;
 
   public String getMessage() {
@@ -32,13 +32,13 @@ public class TwitterForm implements Serializable {
   public void setFavoriteCount(long favoriteCount) {
     this.favoriteCount = favoriteCount;
   }
-  public List<Tweets> getTweets() {
+  public List<Tweet> getTweets() {
     if(tweets == null) {
       tweets = Collections.emptyList();
     }
     return tweets;
   }
-  public void setTweets(List<Tweets> tweets) {
+  public void setTweet(List<Tweet> tweets) {
     this.tweets = tweets;
   }
   public String getAuthUri() {
