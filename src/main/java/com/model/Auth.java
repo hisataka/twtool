@@ -10,6 +10,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import twitter4j.Twitter;
 
+import java.util.List;
+import java.util.Collections;
+
 @Component
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class Auth implements Serializable {
@@ -20,7 +23,8 @@ public class Auth implements Serializable {
   private Twitter twitter;
   private String userId;
   private String userName;
-
+  private String authUri;
+  private List<TwitterUser> friends;
   public OAuthConsumer getConsumer() {
     return consumer;
   }
@@ -50,5 +54,20 @@ public class Auth implements Serializable {
   }
   public void setUserName(String userName) {
     this.userName = userName;
+  }
+  public String getAuthUri() {
+    return authUri;
+  }
+  public void setAuthUri(String authUri) {
+    this.authUri = authUri;
+  }
+  public List<TwitterUser> getFriends() {
+    if(friends == null) {
+      friends = Collections.emptyList();
+    }
+    return friends;
+  }
+  public void setFriends(List<TwitterUser> friends) {
+    this.friends = friends;
   }
 }

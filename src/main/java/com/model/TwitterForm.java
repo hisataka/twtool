@@ -8,17 +8,16 @@ import java.util.List;
 public class TwitterForm implements Serializable {
   private static final long serialVersionUID = 1L;
 
-  private long favoriteId;
+  private Long favoriteId;
   private String message;
   private String toUserName;
   private long favoriteCount;
   private List<Tweet> tweets;
-  private String authUri;
 
-  public long getFavoriteId() {
+  public Long getFavoriteId() {
     return favoriteId;
   }
-  public void setFavoritedId(long favoriteId) {
+  public void setFavoriteId(Long favoriteId) {
     this.favoriteId = favoriteId;
   }
   public String getMessage() {
@@ -47,11 +46,5 @@ public class TwitterForm implements Serializable {
   }
   public void setTweets(List<Tweet> tweets) {
     this.tweets = tweets;
-  }
-  public String getAuthUri() {
-    return authUri;
-  }
-  public void setAuthUri(String authUri) {
-    this.authUri = authUri;
   }
 }

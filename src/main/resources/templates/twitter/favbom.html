@@ -10,12 +10,11 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" th:href="${form.authUri}">Twitterログイン</a>
+            <a class="navbar-brand" th:href="${auth.authUri}">Twitterログイン</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
         <li class="active"><a href="#">イイネ爆</a></li>
-        <li><a href="/watch">監視</a></li>
         <li><a href="/twicas">ツイキャス</a></li>
         </ul>
         </div>
@@ -38,26 +37,77 @@
     </table>
 
     <div class="page-header"><h1>イイネ爆</h1></div>
-    <form action="/fav" method="post" >
+    <form action="/doSomething" method="post" >
         <table class="table">
             <thead><tr><th>項目</th><th>設定</tr></thead>
             <tbody>
-                <tr><td>イイネ対象ユーザ名</td><td><input type="text" name="toUserName" th:value="${form.toUserName}" /></td></tr>
-                <tr><td>イイネしたい件数</td><td><input type="text" name="favoriteCount" th:value="${form.favoriteCount}" /></td></tr>
+                <tr>
+                    <td>ユーザ名</td>
+                    <td>
+                        <select id="toUserSelect" name="toUserName">
+                            <option selected value="">--</option>
+                            <option th:each="friend: ${auth.friends}" th:value="${friend.screenName}" th:selected="${friend.screenName == form.toUserName}" th:inline="text" th:data-icon="${friend.imageUri}">
+                                [[${friend.name}]]
+                            </option>
+                        </select>
+                    </td>
+                </tr>
+                <tr><td>件数</td><td><input type="text" name="favoriteCount" th:value="${form.favoriteCount}" /></td></tr>
             </tbody>
         </table>
         <hr />
-        <input type="submit" name="fav" value="まとめてイイネ" />
+        <input type="submit" name="doFavorite" value="まとめてイイネ" />
+        <input type="submit" name="getTweet" value="ツイート取得" />
     </form>
-    <div class="page-header"><h1>イイネ爆の被害にあったツイート</h1></div>
+
+    <div class="page-header"><h1>ツイート一覧</h1></div>
     <table class="table">
-        <thead><tr><th>内容</th></tr></thead>
+        <thead><tr><th>ID</th><th>イイネ済</th><th>内容</th></tr></thead>
         <tbody>
             <tr th:each="tweet:${form.tweets}">
+                <td th:text="${tweet.id}"></td>
+                <td>
+                    <div th:if="${tweet.favorited}">◎</div>
+                    <div th:unless="${tweet.favorited}">
+                        <form action="/singlefav" method="post" class="singlefav">
+                            <input type="hidden" name="favoriteId" th:value="${tweet.id}" />
+                            <input type="submit" name="singlefav" value="今すぐイイネ" />
+                        </form>
+                    </div>
+                </td>
                 <td th:text="${tweet.text}"></td>
             </tr>
         </tbody>
-    </table>
 </div>
+<script>
+(function() {
+    $('form.singlefav').submit(function(event){
+        event.preventDefault();
+        var f = $(this);
+        $.ajax({
+            url: f.prop('action'),
+            method: f.prop('method'),
+            type: f.prop('type'),
+            data: f.serialize(),
+            timeout: 10000,
+            dataType: 'text'
+        })
+        .done(function( data ) {
+        // 通信が成功したときの処理
+            f.children('input[type="submit"]').hide();
+            f.append('◎');
+        })
+        .fail(function( data ) {
+        // 通信が失敗したときの処理
+            alert(data);
+        })
+        .always(function( data ) {
+        // 通信が完了したとき
+        });
+    });
+
+    $('#toUserSelect').wSelect();
+})();
+</script>
 </body>
 </html>
