@@ -25,6 +25,7 @@ public class Auth implements Serializable {
   private String userName;
   private String authUri;
   private List<TwitterUser> friends;
+  private String imageUri;
   public OAuthConsumer getConsumer() {
     return consumer;
   }
@@ -69,5 +70,11 @@ public class Auth implements Serializable {
   }
   public void setFriends(List<TwitterUser> friends) {
     this.friends = friends;
+  }
+  public String getImageUri() {
+    return imageUri;
+  }
+  public void setImageUri(String imageUri) {
+    this.imageUri = imageUri;
   }
 }

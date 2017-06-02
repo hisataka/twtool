@@ -10,12 +10,16 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" th:href="${auth.authUri}">Twitterログイン</a>
+            <div th:if="${auth.authUri}">
+                <a class="navbar-brand" th:href="${auth.authUri}">Twitterログイン</a>
+            </div>
+            <div th:unless="${auth.authUri}">
+                <img th:src="${auth.imageUri}" />
+            </div>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
         <li class="active"><a href="#">イイネ爆</a></li>
-        <li><a href="/twicas">ツイキャス</a></li>
         </ul>
         </div>
     </div>
@@ -44,12 +48,12 @@
                 <tr>
                     <td>ユーザ名</td>
                     <td>
-                        <select id="toUserSelect" name="toUserName">
-                            <option selected value="">--</option>
-                            <option th:each="friend: ${auth.friends}" th:value="${friend.screenName}" th:selected="${friend.screenName == form.toUserName}" th:inline="text" th:data-icon="${friend.imageUri}">
+                        <input list="toUserSelect" name="toUserName" th:value="${form.toUserName}">
+                        <datalist id="toUserSelect">
+                            <option th:each="friend: ${auth.friends}" th:value="${friend.screenName}">
                                 [[${friend.name}]]
                             </option>
-                        </select>
+                        </datalist>
                     </td>
                 </tr>
                 <tr><td>件数</td><td><input type="text" name="favoriteCount" th:value="${form.favoriteCount}" /></td></tr>
@@ -105,8 +109,6 @@
         // 通信が完了したとき
         });
     });
-
-    $('#toUserSelect').wSelect();
 })();
 </script>
 </body>

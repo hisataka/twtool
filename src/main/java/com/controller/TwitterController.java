@@ -34,18 +34,22 @@ public class TwitterController {
     TwitterForm form = new TwitterForm();
     form.setMessage("off");
     form.setFavoriteCount(Integer.parseInt(twitterConfig.getDefaultFavoriteCount()));
+    auth.setAuthUri("off");
+    
+    if(auth.getConsumer() == null || auth.getProvider() == null) {
+      auth.setConsumer(new DefaultOAuthConsumer(twitterConfig.getConsumerKey(), twitterConfig.getConsumerSecret()));
+      auth.setProvider(new DefaultOAuthProvider(twitterConfig.getRequestTokenUri(), twitterConfig.getAccessTokenUri(), twitterConfig.getAuthorizeUri()));
+      try {
+        auth.setAuthUri(auth.getProvider().retrieveRequestToken(auth.getConsumer(), twitterConfig.getCallbackUri()));
+      } catch (Exception e) {
+        form.setMessage(e.getMessage());
+      }
+    }
     return form;
   }
 
   @RequestMapping("/")
   String index(@ModelAttribute TwitterForm form, Model model) {
-    auth.setConsumer(new DefaultOAuthConsumer(twitterConfig.getConsumerKey(), twitterConfig.getConsumerSecret()));
-    auth.setProvider(new DefaultOAuthProvider(twitterConfig.getRequestTokenUri(), twitterConfig.getAccessTokenUri(), twitterConfig.getAuthorizeUri()));
-    try {
-      auth.setAuthUri(auth.getProvider().retrieveRequestToken(auth.getConsumer(), twitterConfig.getCallbackUri()));
-    } catch (Exception e) {
-      form.setMessage(e.getMessage());
-    }
     model.addAttribute("form", form);
     model.addAttribute("auth", auth);
     return "twitter/favbom";
@@ -72,6 +76,7 @@ public class TwitterController {
 
       auth.setTwitter(new TwitterFactory(cb.build()).getInstance());
       auth.setFriends(twitterLogic.getFriends(auth.getTwitter(), auth.getUserName()));
+      auth.setImageUri(auth.getTwitter().showUser(auth.getUserName()).getProfileImageURL());
       
     } catch (Exception e) {
       form.setMessage(e.getMessage());
