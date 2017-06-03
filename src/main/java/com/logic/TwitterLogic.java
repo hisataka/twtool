@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Date;
+
 import twitter4j.*;
 import com.model.Tweet;
 import com.model.TwitterUser;
@@ -20,8 +22,12 @@ public class TwitterLogic {
 
   public void logging(String userName, String text) {
     Log log = new Log();
-    log.setText(System.currentTimeMillis() + " : " + text);
-    log.setUserName(userName);
+
+
+    System.out.println();
+
+    log.setText(text);
+    log.setUserName(new Date().toString() + " : " + userName);
     logRepository.save(log);
   }
 
