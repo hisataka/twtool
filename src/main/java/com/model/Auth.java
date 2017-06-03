@@ -11,6 +11,7 @@ import org.springframework.web.context.WebApplicationContext;
 import twitter4j.Twitter;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Collections;
 
 @Component
@@ -26,6 +27,7 @@ public class Auth implements Serializable {
   private String authUri;
   private List<TwitterUser> friends;
   private String imageUri;
+  private Map<String, String> systemConfig;
   public OAuthConsumer getConsumer() {
     return consumer;
   }
@@ -76,5 +78,14 @@ public class Auth implements Serializable {
   }
   public void setImageUri(String imageUri) {
     this.imageUri = imageUri;
+  }
+  public Map<String, String> getSystemConfig() {
+    if(systemConfig == null) {
+      systemConfig = Collections.emptyMap();
+    }
+    return systemConfig;
+  }
+  public void setSystemConfig(Map<String, String> systemConfig) {
+    this.systemConfig = systemConfig;
   }
 }

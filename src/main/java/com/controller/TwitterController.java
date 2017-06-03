@@ -15,10 +15,15 @@ import twitter4j.conf.*;
 import oauth.signpost.basic.*;
 import oauth.signpost.http.HttpParameters;
 
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+
 import com.model.Auth;
 import com.model.TwitterForm;
-import com.model.TwitterConfig;
 import com.logic.TwitterLogic;
+import com.repository.SystemValueRepository;
+import com.model.SystemValue;
 
 @Controller
 @SessionAttributes("scopedTarget.auth")
@@ -27,22 +32,27 @@ public class TwitterController {
   Auth auth;
 
   @Autowired
-  TwitterConfig twitterConfig;
+  TwitterLogic twitterLogic;
 
   @Autowired
-  TwitterLogic twitterLogic;
+  SystemValueRepository systemValueRepository;
 
   @ModelAttribute
   TwitterForm setUpForm() {
     TwitterForm form = new TwitterForm();
     form.setMessage("off");
-    form.setFavoriteCount(Integer.parseInt(twitterConfig.getDefaultFavoriteCount()));
-    
+  
     if(auth.getConsumer() == null || auth.getProvider() == null) {
-      auth.setConsumer(new DefaultOAuthConsumer(twitterConfig.getConsumerKey(), twitterConfig.getConsumerSecret()));
-      auth.setProvider(new DefaultOAuthProvider(twitterConfig.getRequestTokenUri(), twitterConfig.getAccessTokenUri(), twitterConfig.getAuthorizeUri()));
+      List<SystemValue> list = systemValueRepository.findAll();
+      Map<String, String> systemConfig = new HashMap<String, String>();
+      for(SystemValue l: list) {
+        systemConfig.put(l.getKey(), l.getValue());
+      }
+      auth.setSystemConfig(systemConfig);
+      auth.setConsumer(new DefaultOAuthConsumer(systemConfig.get("CONSUMER_KEY"), systemConfig.get("CONSUMER_SECRET")));
+      auth.setProvider(new DefaultOAuthProvider(systemConfig.get("REQUEST_TOKEN_URI"), systemConfig.get("ACCESS_TOKEN_URI"), systemConfig.get("AUTHORIZE_URI")));
       try {
-        auth.setAuthUri(auth.getProvider().retrieveRequestToken(auth.getConsumer(), twitterConfig.getCallbackUri()));
+        auth.setAuthUri(auth.getProvider().retrieveRequestToken(auth.getConsumer(), systemConfig.get("CALLBACK_URI")));
       } catch (Exception e) {
         form.setMessage(e.getMessage());
       }
@@ -79,8 +89,8 @@ public class TwitterController {
 
       ConfigurationBuilder cb = new ConfigurationBuilder();
       cb.setDebugEnabled(true)
-        .setOAuthConsumerKey(twitterConfig.getConsumerKey())
-        .setOAuthConsumerSecret(twitterConfig.getConsumerSecret())
+        .setOAuthConsumerKey(auth.getSystemConfig().get("CONSUMER_KEY"))
+        .setOAuthConsumerSecret(auth.getSystemConfig().get("CONSUMER_SECRET"))
         .setOAuthAccessToken(auth.getConsumer().getToken())
         .setOAuthAccessTokenSecret(auth.getConsumer().getTokenSecret());
 
@@ -99,7 +109,7 @@ public class TwitterController {
   @RequestMapping(value="/doSomething", params="doFavorite")
   String doFavorite(@ModelAttribute TwitterForm form, Model model) {
     try{
-      form.setTweets(twitterLogic.doFavorite(auth.getTwitter(), form.getFavoriteCount(), form.getToUserName(), Integer.parseInt(twitterConfig.getPagingCount()), true));
+      form.setTweets(twitterLogic.doFavorite(auth.getTwitter(), form.getFavoriteCount(), form.getToUserName(), Integer.parseInt(auth.getSystemConfig().get("PAGING_COUNT")), true));
     }  catch (Exception e) {
       form.setMessage(e.getMessage());
     }
@@ -111,7 +121,7 @@ public class TwitterController {
   @RequestMapping(value="/doSomething", params="getTweet")
   String getTweet(@ModelAttribute TwitterForm form, Model model) {
     try{
-      form.setTweets(twitterLogic.doFavorite(auth.getTwitter(), form.getFavoriteCount(), form.getToUserName(), Integer.parseInt(twitterConfig.getPagingCount()), false));
+      form.setTweets(twitterLogic.doFavorite(auth.getTwitter(), form.getFavoriteCount(), form.getToUserName(), Integer.parseInt(auth.getSystemConfig().get("PAGING_COUNT")), false));
     }  catch (Exception e) {
       form.setMessage(e.getMessage());
     }
