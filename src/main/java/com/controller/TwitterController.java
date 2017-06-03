@@ -71,7 +71,7 @@ public class TwitterController {
 
   @RequestMapping("/logout")
   String logout(@ModelAttribute TwitterForm form, Model model, SessionStatus sessionStatus) {
-    twitterLogic.logging("ログアウト", auth.getUserName());
+    twitterLogic.logging(auth.getUserName(), "ログアウト");
     sessionStatus.setComplete();
     model.addAttribute("form", form);
     model.addAttribute("auth", auth);
@@ -101,7 +101,7 @@ public class TwitterController {
       auth.setFriends(twitterLogic.getFriends(auth.getTwitter(), auth.getUserName()));
       auth.setImageUri(auth.getTwitter().showUser(auth.getUserName()).getProfileImageURL());
 
-      twitterLogic.logging("ログイン", auth.getUserName());
+      twitterLogic.logging(auth.getUserName(), "ログイン");
       
     } catch (Exception e) {
       form.setMessage(e.getMessage());
@@ -118,7 +118,7 @@ public class TwitterController {
     }  catch (Exception e) {
       form.setMessage(e.getMessage());
     }
-    twitterLogic.logging("doFavorite: " + form.getFavoriteCount() + "件: " + form.getToUserName(), auth.getUserName());
+    twitterLogic.logging(auth.getUserName(), "doFavorite: " + form.getFavoriteCount() + "件: " + form.getToUserName());
     model.addAttribute("form", form);
     model.addAttribute("auth", auth);
     return "twitter/favbom";
@@ -131,7 +131,7 @@ public class TwitterController {
     }  catch (Exception e) {
       form.setMessage(e.getMessage());
     }
-    twitterLogic.logging("getTweet: " + form.getFavoriteCount() + "件: " + form.getToUserName(), auth.getUserName());
+    twitterLogic.logging(auth.getUserName(), "getTweet: " + form.getFavoriteCount() + "件: " + form.getToUserName());
     model.addAttribute("form", form);
     model.addAttribute("auth", auth);
     return "twitter/favbom";
@@ -145,7 +145,7 @@ public class TwitterController {
     }  catch (Exception e) {
       return e.toString();
     }
-    twitterLogic.logging("singlefav: " + form.getFavoriteId(), auth.getUserName());
+    twitterLogic.logging(auth.getUserName(), "singlefav: " + form.getFavoriteId());
 		return "";
 	}
 }
