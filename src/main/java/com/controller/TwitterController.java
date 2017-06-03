@@ -118,7 +118,7 @@ public class TwitterController {
     }  catch (Exception e) {
       form.setMessage(e.getMessage());
     }
-    twitterLogic.logging("doFavorite: " + form.getFavoriteCount() + "件", auth.getUserName());
+    twitterLogic.logging("doFavorite: " + form.getFavoriteCount() + "件: " + form.getToUserName(), auth.getUserName());
     model.addAttribute("form", form);
     model.addAttribute("auth", auth);
     return "twitter/favbom";
@@ -131,7 +131,7 @@ public class TwitterController {
     }  catch (Exception e) {
       form.setMessage(e.getMessage());
     }
-    twitterLogic.logging("getTweet: " + form.getFavoriteCount() + "件", auth.getUserName());
+    twitterLogic.logging("getTweet: " + form.getFavoriteCount() + "件: " + form.getToUserName(), auth.getUserName());
     model.addAttribute("form", form);
     model.addAttribute("auth", auth);
     return "twitter/favbom";
