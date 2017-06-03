@@ -46,7 +46,7 @@ public class TwitterLogic {
     return friends;
   }
 
-  public List<Tweet> doFavorite(Twitter twitter, long favoriteCount, String toUserName, int pagingCount, boolean doFavorited) throws Exception {
+  public List<Tweet> doFavorite(Twitter twitter, long favoriteCount, String toUserName, int pagingCount, boolean doFavorited, boolean isExcludeRep) throws Exception {
     List<Tweet> tweets = new ArrayList<Tweet>();
     int pageCounter = 1;
     long favoriteCounter = 0;
@@ -61,21 +61,19 @@ public class TwitterLogic {
           break;
         }
 
-        if(!doFavorited) {
-          Tweet tweet = new Tweet();
-          tweet.setId(status.getId());
-          tweet.setFavorited(status.isFavorited());
-          tweet.setText(status.getText());
-          tweets.add(tweet);
-          favoriteCounter ++;
-        } else if (!status.isFavorited() && status.getInReplyToStatusId() == -1) {
+        if(isExcludeRep && status.getInReplyToStatusId() != -1) {
+          continue;
+        }
+
+        Tweet tweet = new Tweet();
+        tweet.setId(status.getId());
+        tweet.setFavorited(status.isFavorited());
+        tweet.setText(status.getText());
+        tweets.add(tweet);
+        favoriteCounter ++;
+        if(doFavorited) {
           twitter.createFavorite(status.getId());
-          Tweet tweet = new Tweet();
-          tweet.setId(status.getId());
           tweet.setFavorited(true);
-          tweet.setText(status.getText());
-          tweets.add(tweet);
-          favoriteCounter ++;
         }
       }
     }

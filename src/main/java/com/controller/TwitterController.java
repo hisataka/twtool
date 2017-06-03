@@ -20,12 +20,10 @@ import java.util.Map;
 import java.util.HashMap;
 
 import com.model.Auth;
-import com.model.TwitterForm;
+import com.form.TwitterForm;
 import com.logic.TwitterLogic;
 import com.repository.SystemValueRepository;
 import com.entity.SystemValue;
-import com.repository.LogRepository;
-import com.entity.Log;
 
 @Controller
 @SessionAttributes("scopedTarget.auth")
@@ -43,6 +41,9 @@ public class TwitterController {
   TwitterForm setUpForm() {
     TwitterForm form = new TwitterForm();
     form.setMessage("off");
+    if(form.getExcludeRep() == null) {
+      form.setExcludeRep("off");
+    }
   
     if(auth.getConsumer() == null || auth.getProvider() == null) {
       List<SystemValue> list = systemValueRepository.findAll();
@@ -114,7 +115,15 @@ public class TwitterController {
   @RequestMapping(value="/doSomething", params="doFavorite")
   String doFavorite(@ModelAttribute TwitterForm form, Model model) {
     try{
-      form.setTweets(twitterLogic.doFavorite(auth.getTwitter(), form.getFavoriteCount(), form.getToUserName(), Integer.parseInt(auth.getSystemConfig().get("PAGING_COUNT")), true));
+
+      form.setTweets(twitterLogic.doFavorite(
+        auth.getTwitter()
+        , form.getFavoriteCount()
+        , form.getToUserName()
+        , Integer.parseInt(auth.getSystemConfig().get("PAGING_COUNT"))
+        , true
+        , form.getExcludeRep().equals("checked") ? true : false)
+      );
     }  catch (Exception e) {
       form.setMessage(e.getMessage());
     }
@@ -127,7 +136,16 @@ public class TwitterController {
   @RequestMapping(value="/doSomething", params="getTweet")
   String getTweet(@ModelAttribute TwitterForm form, Model model) {
     try{
-      form.setTweets(twitterLogic.doFavorite(auth.getTwitter(), form.getFavoriteCount(), form.getToUserName(), Integer.parseInt(auth.getSystemConfig().get("PAGING_COUNT")), false));
+      System.out.println(form.getExcludeRep());
+      System.out.println(form.getExcludeRep().equals("checked") ? true : false);
+      form.setTweets(twitterLogic.doFavorite(
+        auth.getTwitter()
+        , form.getFavoriteCount()
+        , form.getToUserName()
+        , Integer.parseInt(auth.getSystemConfig().get("PAGING_COUNT"))
+        , false
+        , form.getExcludeRep().equals("checked") ? true : false)
+      );
     }  catch (Exception e) {
       form.setMessage(e.getMessage());
     }

@@ -1,9 +1,13 @@
-package com.model;
+package com.form;
 
 import java.io.Serializable;
 
 import java.util.Collections;
 import java.util.List;
+
+import javax.validation.constraints.Pattern;
+
+import com.model.Tweet;
 
 public class TwitterForm implements Serializable {
   private static final long serialVersionUID = 1L;
@@ -13,6 +17,9 @@ public class TwitterForm implements Serializable {
   private String toUserName;
   private long favoriteCount;
   private List<Tweet> tweets;
+
+  @Pattern(regexp="checked")
+  private String excludeRep;
 
   public Long getFavoriteId() {
     return favoriteId;
@@ -46,5 +53,11 @@ public class TwitterForm implements Serializable {
   }
   public void setTweets(List<Tweet> tweets) {
     this.tweets = tweets;
+  }
+  public String getExcludeRep() {
+    return excludeRep;
+  }
+  public void setExcludeRep(String excludeRep) {
+    this.excludeRep = excludeRep;
   }
 }
