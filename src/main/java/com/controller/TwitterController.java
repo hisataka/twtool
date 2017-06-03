@@ -23,7 +23,9 @@ import com.model.Auth;
 import com.model.TwitterForm;
 import com.logic.TwitterLogic;
 import com.repository.SystemValueRepository;
-import com.model.SystemValue;
+import com.entity.SystemValue;
+import com.repository.LogRepository;
+import com.entity.Log;
 
 @Controller
 @SessionAttributes("scopedTarget.auth")
@@ -69,6 +71,7 @@ public class TwitterController {
 
   @RequestMapping("/logout")
   String logout(@ModelAttribute TwitterForm form, Model model, SessionStatus sessionStatus) {
+    twitterLogic.logging("ログアウト", auth.getUserName());
     sessionStatus.setComplete();
     model.addAttribute("form", form);
     model.addAttribute("auth", auth);
@@ -97,6 +100,8 @@ public class TwitterController {
       auth.setTwitter(new TwitterFactory(cb.build()).getInstance());
       auth.setFriends(twitterLogic.getFriends(auth.getTwitter(), auth.getUserName()));
       auth.setImageUri(auth.getTwitter().showUser(auth.getUserName()).getProfileImageURL());
+
+      twitterLogic.logging("ログイン", auth.getUserName());
       
     } catch (Exception e) {
       form.setMessage(e.getMessage());
@@ -113,6 +118,7 @@ public class TwitterController {
     }  catch (Exception e) {
       form.setMessage(e.getMessage());
     }
+    twitterLogic.logging("doFavorite: " + form.getFavoriteCount() + "件", auth.getUserName());
     model.addAttribute("form", form);
     model.addAttribute("auth", auth);
     return "twitter/favbom";
@@ -125,6 +131,7 @@ public class TwitterController {
     }  catch (Exception e) {
       form.setMessage(e.getMessage());
     }
+    twitterLogic.logging("getTweet: " + form.getFavoriteCount() + "件", auth.getUserName());
     model.addAttribute("form", form);
     model.addAttribute("auth", auth);
     return "twitter/favbom";
@@ -138,6 +145,7 @@ public class TwitterController {
     }  catch (Exception e) {
       return e.toString();
     }
+    twitterLogic.logging("singlefav: " + form.getFavoriteId(), auth.getUserName());
 		return "";
 	}
 }

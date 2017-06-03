@@ -1,6 +1,7 @@
 package com.logic;
 
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -8,8 +9,21 @@ import twitter4j.*;
 import com.model.Tweet;
 import com.model.TwitterUser;
 
+import com.repository.LogRepository;
+import com.entity.Log;
+
 @Component
 public class TwitterLogic {
+
+  @Autowired
+  LogRepository logRepository;
+
+  public void logging(String userName, String text) {
+    Log log = new Log();
+    log.setText(text);
+    log.setUserName(userName);
+    logRepository.save(log);
+  }
 
   public List<TwitterUser> getFriends(Twitter twitter, String userName) throws Exception {
     
