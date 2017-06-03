@@ -20,7 +20,7 @@ public class TwitterLogic {
 
   public void logging(String userName, String text) {
     Log log = new Log();
-    log.setText(text);
+    log.setText(System.currentTimeMillis() + " : " + text);
     log.setUserName(userName);
     logRepository.save(log);
   }
